@@ -1,0 +1,32 @@
+{
+  "recommendations": [
+    "2gua.rainbow-brackets",
+    "aaron-bond.better-comments",
+    "christian-kohler.npm-intellisense",
+    "codezombiech.gitignore",
+    "coenraads.bracket-pair-colorizer-2",
+    "dbaeumer.vscode-eslint",
+    "donjayamanne.githistory",
+    "dsznajder.es7-react-js-snippets",
+    "esbenp.prettier-vscode",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "github.vscode-pull-request-github",
+    "kisstkondoros.vscode-gutter-preview",
+    "kiteco.kite",
+    "meganrogge.template-string-converter",
+    "mgmcdermott.vscode-language-babel",
+    "mitchdenny.ecdc",
+    "ms-vsliveshare.vsliveshare-pack",
+    "naumovs.color-highlight",
+    "oderwat.indent-rainbow",
+    "pkief.material-icon-theme",
+    "plievone.vscode-template-literal-editor",
+    "ponicode.ponicode",
+    "stkb.rewrap",
+    "streetsidesoftware.code-spell-checker",
+    "tyriar.sort-lines",
+    "visualstudioexptteam.vscodeintellicode",
+    "webben.browserslist"
+  ]
+}

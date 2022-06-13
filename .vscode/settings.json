@@ -1,0 +1,42 @@
+{
+  "better-comments.highlightPlainText": true,
+  "[css]": {
+    "editor.foldingStrategy": "indentation"
+  },
+  "css.validate": false,
+  "editor.accessibilitySupport": "off",
+  "editor.codeActionsOnSave": {
+    "addMissingImports": true,
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "'Victor Mono', 'Inconsolata', 'Source Code Pro', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
+  "editor.linkedEditing": true,
+  "editor.smoothScrolling": true,
+  "editor.tabSize": 2,
+  "emmet.includeLanguages": {
+    "javascript": "html"
+  },
+  "editor.wordWrap": "wordWrapColumn",
+  "files.autoSave": "onFocusChange",
+  "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
+  "javascript.validate.enable": false,
+  "kite.codefinder.enableLineDecoration": false,
+  "ponicode.testSettings.testLocation.locationType": "Same folder as source file",
+  "ponicode.testSettings.testLocation.path": "{rootDir}/{filePath}/{fileName}.test.{ext}",
+  "prettier.requireConfig": true,
+  "terminal.integrated.fontFamily": "'Inconsolata', 'Source Code Pro', monospace",
+  "workbench.colorTheme": "Material Theme",
+  "workbench.enableExperiments": false,
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.view.alwaysShowHeaderActions": true,
+  "cSpell.words": [
+    "TTFB",
+    "browserslist"
+  ]
+}
