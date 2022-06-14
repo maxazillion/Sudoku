@@ -8,7 +8,7 @@ import _ from "lodash";
 
 
 
-function Sudoku({rawBoardIncoming}){
+function Sudoku({rawBoardIncoming, boardCreatorMode}){
   const [board, setBoard] = useState(rawBoardIncoming);
   const [rawBoard] = useState(_.cloneDeep(rawBoardIncoming))
   const [possibleMoves, setPossibleMoves] = useState(null);
@@ -34,8 +34,10 @@ function Sudoku({rawBoardIncoming}){
   },[setPossibleMoves, board])
   return (
     <div>
-      <Button content={"Solve"} action={solveHandler}/>
-      <Button content={"Reset"} action={()=> setBoard(_.cloneDeep(rawBoard))}/>
+      {boardCreatorMode ? null : <div>
+        <Button content={"Solve"} action={solveHandler}/>
+        <Button content={"Reset"} action={()=> setBoard(_.cloneDeep(rawBoard))}/>
+      </div>}
       {possibleMoves !== null ? <Board numbers={board} possibleNums={possibleMoves} setBoardFunc={setBoard}/> : null}
     </div>
   )
@@ -45,4 +47,5 @@ export default Sudoku;
 
 Sudoku.propTypes = {
   rawBoardIncoming: PropTypes.array.isRequired,
+  boardCreatorMode: PropTypes.bool.isRequired,
 }
