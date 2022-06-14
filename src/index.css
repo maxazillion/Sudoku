@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+button:hover {
+    background-color: black;
+}
+
+#cube:hover {
+    background-color: black;
+}
