@@ -14,7 +14,6 @@ function Cubes({ spaceRight, number, possibleNums, setBoardFunc, indexPair, }) {
     })
 
   }
-  console.log(indexPair)
   return (
     <div style={{
       marginRight: spaceRight ? "35px" : "15px",
