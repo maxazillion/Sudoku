@@ -1,33 +1,48 @@
 import Board from "../Board";
 import { useEffect, useState } from "react";
-import { findPoss } from "../../Utils";
+import { findPoss, fillMove } from "../../Utils";
+import PropTypes from "prop-types";
+import Button from "../Button";
+import _ from "lodash";
 
 
-const EASY = [
-  [3, 4, 2,   0, 1, 5,  0, 6, 8,],
-  [0, 0, 8,   0, 0, 7,  3, 6, 1,],
-  [1, 0, 0,   6, 0, 0,  0, 0, 0,],
 
-  [0, 8, 5,   0, 0, 0,  0, 4, 7,],
-  [0, 0, 9,   0, 0, 0,  8, 5, 0,],
-  [0, 0, 4,   0, 9, 8,  0, 1, 0,],
 
-  [9, 2, 6,   0, 0, 1,  0, 3, 4,],
-  [0, 0, 1,   0, 0, 9,  6, 0, 2,],
-  [0, 7, 3,   0, 0, 0,  0, 0, 9],
-]
-
-function Sudoku(){
-  const [board, setBoard] = useState(EASY);
+function Sudoku({rawBoardIncoming}){
+  const [board, setBoard] = useState(rawBoardIncoming);
+  const [rawBoard] = useState(_.cloneDeep(rawBoardIncoming))
   const [possibleMoves, setPossibleMoves] = useState(null);
 
-  findPoss(board);
+  function solveHandler(){
+    let tempBoard = _.cloneDeep(board);
+    let tempPoss = _.cloneDeep(possibleMoves);
+    let endBoard = [[]];
+    let failSafe = 0;
+
+    while(tempBoard.join() !== endBoard.join() && failSafe <  10){
+      endBoard = _.cloneDeep(tempBoard);
+      tempBoard = fillMove(_.cloneDeep(endBoard), tempPoss)
+      tempPoss = findPoss(tempBoard);
+      failSafe++;
+    }
+    setBoard(endBoard)
+  }
+
   useEffect(()=>{
     setPossibleMoves(findPoss(board))
-
+    // setBoard(fillMove(board, possibleMoves))
   },[setPossibleMoves, board])
   return (
-    possibleMoves !== null ? <Board numbers={EASY} possibleNums={possibleMoves}/> : null
+    <div>
+      <Button content={"Solve"} action={solveHandler}/>
+      <Button content={"Reset"} action={()=> setBoard(_.cloneDeep(rawBoard))}/>
+      {possibleMoves !== null ? <Board numbers={board} possibleNums={possibleMoves} setBoardFunc={setBoard}/> : null}
+    </div>
   )
 }
 export default Sudoku;
+
+
+Sudoku.propTypes = {
+  rawBoardIncoming: PropTypes.array.isRequired,
+}

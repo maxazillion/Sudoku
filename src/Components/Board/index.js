@@ -1,7 +1,7 @@
 import Cubes from "../Cubes";
 import PropTypes from "prop-types";
 
-function Board({numbers, possibleNums}){
+function Board({numbers, possibleNums, setBoardFunc}){
   let rows = [];
   let count = 0;
 
@@ -10,13 +10,17 @@ function Board({numbers, possibleNums}){
     for(let ii = 0; ii < 9; ii++){
       if(ii  === 2 || ii  === 5){
         rows[i].push(<Cubes
+          setBoardFunc={setBoardFunc}
           spaceRight={true}
+          indexPair={[i, ii]}
           number={numbers[i][ii]}
           possibleNums={numbers[i][ii] !== 0 ? null: possibleNums[count]}/>)
       }
       else{
         rows[i].push(<Cubes
+          setBoardFunc={setBoardFunc}
           spaceRight={false}
+          indexPair={[i, ii]}
           number={numbers[i][ii]}
           possibleNums={numbers[i][ii] !== 0 ? null: possibleNums[count]} />)
       }
@@ -43,5 +47,6 @@ export default Board;
 
 Board.propTypes = {
   numbers: PropTypes.array.isRequired,
-  possibleNums: PropTypes.array
+  possibleNums: PropTypes.array,
+  setBoardFunc: PropTypes.func.isRequired,
 }
