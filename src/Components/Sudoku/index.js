@@ -6,16 +6,17 @@ import Button from "../Button";
 import _ from "lodash";
 
 
-
-
-function Sudoku({rawBoardIncoming, boardCreatorMode}){
+function Sudoku({ rawBoardIncoming, boardCreatorMode }) {
+  //represents board in 9 rows of 9
   const [board, setBoard] = useState(rawBoardIncoming);
-  const [rawBoard] = useState(_.cloneDeep(rawBoardIncoming))
+  const [rawBoard] = useState(_.cloneDeep(rawBoardIncoming));
+  //represents possible moves per slot in 81 arrays
   const [possibleMoves, setPossibleMoves] = useState(null);
 
-  function solve(startPuz, startPos){
-    let tempBoard = _.cloneDeep(startPuz);
-    let tempPoss = _.cloneDeep(startPos);
+  // right, wrong, smallest pairs
+  function solve(startPuz, startPos) {
+    let localBoard = _.cloneDeep(startPuz);
+    let localPoss = _.cloneDeep(startPos);
     let endBoard = [[]];
     let failSafe = 0;
     let count = 0;
@@ -23,130 +24,148 @@ function Sudoku({rawBoardIncoming, boardCreatorMode}){
     let isWrong = false;
     let solved = true;
 
-    while(tempBoard.join() !== endBoard.join() && failSafe <  20){
-      endBoard = _.cloneDeep(tempBoard);
-      tempBoard = fillMove(_.cloneDeep(endBoard), tempPoss)
-      tempPoss = findPoss(tempBoard);
-      if(failSafe === 19) console.log("whopse")
+    //will fill cells if their is only one move
+    //will update possible moves
+    while (localBoard.join() !== endBoard.join() && failSafe < 20) {
+      endBoard = _.cloneDeep(localBoard);
+      localBoard = fillMove(_.cloneDeep(endBoard), localPoss);
+      localPoss = findPoss(localBoard);
+      if (failSafe === 19) console.log("whopse");
       failSafe++;
     }
 
-    tempPoss.forEach((posses, index)=>{
-      if(count < 9) {
-        if(tempBoard[count][index % 9] === 0) solved = false;
-        if (tempBoard[count][(index) % 9] === 0 && posses.length === 0) {
+    //check to see if there is a zero slot with no possibilities
+    localPoss.forEach((posses, index) => {
+      if (count < 9) {
+        if (localBoard[count][index % 9] === 0) solved = false;
+        if (localBoard[count][(index) % 9] === 0 && posses.length === 0) {
           isWrong = true;
         }
-        if(tempBoard[count][(index) % 9] === 0 &&
-          (!smallest || smallest.poss.length > posses.length)){
-          smallest = {poss: posses, numSlot: [[count],[index % 9]]}
+        // if there is a zero the problem is not done and we need to find
+        //the slot with the fewest possibilities and return that slot
+        if (localBoard[count][(index) % 9] === 0 &&
+          (!smallest || smallest.poss.length > posses.length)) {
+          smallest = { poss: posses, numSlot: [[count], [index % 9]] };
         }
       }
-      if((index + 1)% 9 === 0) count++;
+      if ((index + 1) % 9 === 0) count++;
     });
 
-
-    if(!isWrong) {
-      isWrong = isIncorrect(endBoard)
+    //this double checks to see if there are vertical or horizontal dupes
+    //im not sure if this is needed
+    if (!isWrong) {
+      isWrong = isIncorrect(endBoard);
     }
 
-    if(isWrong) return [-1, -1];
 
-    if(solved) return [1, endBoard];
+    if (isWrong) return [-1, -1];
 
-    return smallest ?  [0, smallest]: [0, endBoard];
+    if (solved) return [1, endBoard];
+
+    return smallest ? [0, smallest, endBoard, localPoss] : [0, null, endBoard];
   }
 
-  function solveHandler(puzzles = null, possibleMovesList = null, limit = 0){
-    let startPuzzle;
+  function solveHandler(boards = null, possibleMovesList = null, limit = 0) {
+    let startBoard;
     let startPoss;
-    let temp;
-    let puzzlesToTry = puzzles !== null ? puzzles.length - 1 : 1;
-    // console.log("in at: ", limit)
-    limit++
-    if(limit > 80){
-      return 1;
-    }
+    let solveReturn;
+    let boardsToTry = boards !== null ? boards.length - 1 : 1;
+    let fp = false;
+    limit++;
 
-    while(puzzlesToTry >= 0) {
+    console.log("in at: ", limit);
 
-      if(puzzles === null) {
-        startPuzzle = _.cloneDeep(board);
+    while (boardsToTry >= 0 && !fp) {
+      if (boards === null) {
+        startBoard = _.cloneDeep(board);
         startPoss = _.cloneDeep(possibleMoves);
-      }
-      else{
-        startPuzzle = _.cloneDeep(puzzles[puzzlesToTry]);
-        startPoss = _.cloneDeep(possibleMovesList[puzzlesToTry]);
+        fp = true;
+      } else {
+        startBoard = _.cloneDeep(boards[boardsToTry]);
+        startPoss = _.cloneDeep(possibleMovesList[boardsToTry]);
       }
 
-      temp = solve(startPuzzle, startPoss);
-      if (temp[0] === 0) {
-        let recursePuzzies = [];
-        let recursePossies = [];
-        let tempOfTemps = [..._.cloneDeep(startPuzzle)]
-        let slot = [temp[1].numSlot[0], temp[1].numSlot[1]]
-        let recursePossiesTemp;
+      solveReturn = solve(startBoard, startPoss);
 
-        temp[1].poss.forEach((prospect)=>{
+      // his is the recursive path, there are two or more potential answers
+      if (solveReturn[0] === 0) {
+        startBoard = solveReturn[2];
+        startPoss = solveReturn[3];
+        let recurseBoards = [];
+        let recursePossible = [];
+        let tempOfTemps = [..._.cloneDeep(startBoard)];
+        let slot = [solveReturn[1].numSlot[0], solveReturn[1].numSlot[1]];
+        let recursePossibilityTemp;
+
+        solveReturn[1].poss.forEach((prospect) => {
           tempOfTemps[slot[0]][slot[1]] = prospect;
-          recursePossiesTemp = findPoss(_.cloneDeep(tempOfTemps));
-          recursePossies.push(_.cloneDeep(recursePossiesTemp));
-          recursePuzzies.push(_.cloneDeep(tempOfTemps));
-        })
+          recursePossibilityTemp = findPoss(_.cloneDeep(tempOfTemps));
+          recursePossible.push(_.cloneDeep(recursePossibilityTemp));
+          recurseBoards.push(_.cloneDeep(tempOfTemps));
+        });
 
-        let solveHandleResponse = solveHandler(_.cloneDeep(recursePuzzies), _.cloneDeep(recursePossies), limit);
+
+        console.log(recurseBoards);
+        let solveHandleResponse = solveHandler(_.cloneDeep(recurseBoards), _.cloneDeep(recursePossible), limit);
 
         switch (solveHandleResponse) {
           case 1:
+            console.log("solved");
             return 1;
           case -1:
-            if(puzzles && puzzles.length > 1) {
-              puzzles.splice(puzzlesToTry);
-              possibleMovesList.splice(puzzlesToTry);
+            if (boards && boards.length > 0) {
+              boards.splice(boardsToTry);
+              possibleMovesList.splice(boardsToTry);
             }
-            else{
-              // console.log("all out at: ", limit )
+            if (boards) {
+              setBoard(boards[0]);
             }
-            puzzlesToTry--;
-            if(puzzlesToTry < 0){
+            if (boards === null) console.log("failed puzzle");
+            else {
+              console.log("all out at: ", limit);
+            }
+            boardsToTry--;
+            if (boardsToTry < 0) {
               return -1;
             }
             break;
           default:
+            console.log("something went wrong");
             return;
         }
       }
-      if (temp[0] === 1) {
-        console.log("solved")
-        setBoard(temp[1]);
+      if (solveReturn[0] === 1) {
+        console.log("solved");
+        setBoard(solveReturn[1]);
         return 1;
       }
-      if(temp[0] === -1) {
-        console.log("out one path: " + limit)
+      if (solveReturn[0] === -1) {
+        console.log("out one path: " + limit);
         return -1;
       }
     }
-    setPossibleMoves(findPoss(board))
+    setPossibleMoves(findPoss(board));
   }
 
-  useEffect(()=>{
-    setPossibleMoves(findPoss(board))
-  },[setPossibleMoves, board])
+  useEffect(() => {
+    setPossibleMoves(findPoss(board));
+  }, [setPossibleMoves, board]);
 
   return (
     <div>
       {boardCreatorMode ? null : <div>
-        <Button content={"Solve"} action={solveHandler}/>
-        <Button content={"Reset"} action={()=> setBoard(_.cloneDeep(rawBoard))}/>
+        <Button content={"Solve"} action={solveHandler} />
+        <Button content={"Reset"} action={() => setBoard(_.cloneDeep(rawBoard))} />
       </div>}
-      {possibleMoves !== null ? <Board numbers={board} possibleNums={possibleMoves} setBoardFunc={setBoard}/> : null}
+      {possibleMoves !== null ? <Board numbers={board} possibleNums={possibleMoves} setBoardFunc={setBoard} /> : null}
     </div>
-  )
+  );
 }
+
 export default Sudoku;
 
 
 Sudoku.propTypes = {
   rawBoardIncoming: PropTypes.array.isRequired,
-  boardCreatorMode: PropTypes.bool.isRequired,
-}
+  boardCreatorMode: PropTypes.bool.isRequired
+};
