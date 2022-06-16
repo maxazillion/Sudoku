@@ -10,6 +10,7 @@ function Board({numbers, possibleNums, setBoardFunc}){
     for(let ii = 0; ii < 9; ii++){
       if(ii  === 2 || ii  === 5){
         rows[i].push(<Cubes
+          key={(i + 1) * (ii + 1)}
           setBoardFunc={setBoardFunc}
           spaceRight={true}
           indexPair={[i, ii]}
@@ -21,6 +22,7 @@ function Board({numbers, possibleNums, setBoardFunc}){
           setBoardFunc={setBoardFunc}
           spaceRight={false}
           indexPair={[i, ii]}
+          key={(i + 1) * (ii + 1)}
           number={numbers[i][ii]}
           possibleNums={numbers[i][ii] !== 0 ? null: possibleNums[count]} />)
       }
