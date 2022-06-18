@@ -1,5 +1,5 @@
 import "./App.css";
-import { Button, Sudoku } from "./Components";
+import { Button, Sudoku} from "./Components";
 import { useState } from "react";
 const _ = require('lodash');
 
@@ -133,7 +133,7 @@ function App() {
     }
     setIsSetterMode((prev)=>!prev)
     if(useEasyPuzzle){
-      setBoard(_.cloneDeep(HARD2));
+      setBoard(_.cloneDeep(HARD3));
     }
     else {
       setBoard(_.cloneDeep(blankBoard));
@@ -149,8 +149,8 @@ function App() {
       <header className="App-header">
         <div className="flex flex-col">
           {isSetterMode ? <div>
-            <Sudoku rawBoardIncoming={blankBoard} boardCreatorMode={true}/>
-          </div> : <Sudoku rawBoardIncoming={board} boardCreatorMode={false}/>}
+            <Sudoku rawBoard={blankBoard} boardCreatorMode={true}/>
+          </div> : <Sudoku rawBoard={board} boardCreatorMode={false}/>}
           <Button content={isSetterMode ? "Confirm Board" : "Set Board"} action={handleSetBoard}/>
           {
             isSetterMode ? <Button content={"Use Test Puzzle"} action={handleUseTestPuzzle}/> : null

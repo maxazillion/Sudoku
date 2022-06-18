@@ -1,15 +1,15 @@
 import PropTypes from "prop-types";
 
-function Cubes({ spaceRight, number, possibleNums, setBoardFunc, indexPair, }) {
+function Cubes({ spaceRight, possibleNums, setBoardFunc, cell }) {
 
   function onClickHandler(){
     setBoardFunc((prev)=>{
-      let num = prev[indexPair[0]][indexPair[1]];
-      num = num + .5;
-      if(num + .5 === 10){
-        num = -.5;
+      let num = cell.value;
+      num = num + 1;
+      if(num + 1 === 10){
+        num = -1;
       }
-      prev[indexPair[0]][indexPair[1]] = num;
+      prev[cell.index].value = num;
       return [...prev];
     })
 
@@ -18,11 +18,11 @@ function Cubes({ spaceRight, number, possibleNums, setBoardFunc, indexPair, }) {
     <div style={{
       marginRight: spaceRight ? "35px" : "15px",
       marginBottom: "5px",
-      marginLeft: indexPair[1] === 0 ? "15px": "",
+      marginLeft: cell.col === 0 ? "15px": "",
       width: "60px",
       height: "60px"
     }}
-         key={indexPair}
+         key={cell.index}
     >
       <div
         className="border-2"
@@ -35,14 +35,14 @@ function Cubes({ spaceRight, number, possibleNums, setBoardFunc, indexPair, }) {
             <div className="flex flex-row">
               <h6 style={{fontSize: 8}}>{possibleNums.join("").toString()}</h6>
             </div>
-            {number}
+            {cell.value}
           </div>
         :
           <div className="flex flex-col">
             <div className="flex flex-row">
               <h6 style={{fontSize: 10, color: "#282c34"}}>  hire me </h6>
             </div>
-            {number}
+            {cell.value}
           </div>
         }
       </div>
@@ -54,8 +54,7 @@ export default Cubes;
 
 Cubes.propTypes = {
   spaceRight: PropTypes.bool.isRequired,
-  number: PropTypes.number.isRequired,
   possibleNums: PropTypes.array,
   setBoardFunc: PropTypes.func.isRequired,
-  indexPair: PropTypes.array.isRequired,
+  cell: PropTypes.object.isRequired
 };

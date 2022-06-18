@@ -1,34 +1,19 @@
 import Cubes from "../Cubes";
 import PropTypes from "prop-types";
 
-function Board({numbers, possibleNums, setBoardFunc}){
+function Board({numbers, setBoardFunc}){
   let rows = [];
-  let count = 0;
 
-  for(let i = 0; i < 9; i++){
-    rows.push([]);
-    for(let ii = 0; ii < 9; ii++){
-      if(ii  === 2 || ii  === 5){
-        rows[i].push(<Cubes
-          key={(i + 1) * (ii + 1)}
-          setBoardFunc={setBoardFunc}
-          spaceRight={true}
-          indexPair={[i, ii]}
-          number={numbers[i][ii]}
-          possibleNums={numbers[i][ii] !== 0 ? null: possibleNums[count]}/>)
-      }
-      else{
-        rows[i].push(<Cubes
-          setBoardFunc={setBoardFunc}
-          spaceRight={false}
-          indexPair={[i, ii]}
-          key={(i + 1) * (ii + 1)}
-          number={numbers[i][ii]}
-          possibleNums={numbers[i][ii] !== 0 ? null: possibleNums[count]} />)
-      }
-      count++;
-    }
-  }
+  numbers.forEach((cell, index)=>{
+    if(rows[cell.row] === undefined) rows.push([]);
+    rows[cell.row].push(<Cubes
+      key={index}
+      cell={cell}
+      setBoardFunc={setBoardFunc}
+      spaceRight={cell.col === 2 || cell.col === 5}
+      possibleNums={cell.value !== 0 ? null: cell.poss}/>)
+  })
+
 
   return (
     <div className="flex flex-col" >
