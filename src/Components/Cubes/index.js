@@ -1,16 +1,24 @@
 import PropTypes from "prop-types";
+import _ from "lodash";
 
-function Cubes({ spaceRight, possibleNums, setBoardFunc, cell }) {
+function Cubes({ spaceRight, possibleNums, setBoardFunc, cell, index }) {
 
   function onClickHandler(){
     setBoardFunc((prev)=>{
-      let num = cell.value;
-      num = num + 1;
-      if(num + 1 === 10){
-        num = -1;
+      if(typeof cell === "object") {
+        let num = cell.value;
+        num = num + 1;
+        if (num + 1 === 10) {
+          num = -1;
+        }
+        prev[cell.index].value = num;
+        return [...prev];
       }
-      prev[cell.index].value = num;
-      return [...prev];
+      else{
+        let temp = _.cloneDeep(prev)
+        temp[index[0]][index[1]] += 1;
+        return [...temp]
+      }
     })
 
   }
@@ -42,7 +50,7 @@ function Cubes({ spaceRight, possibleNums, setBoardFunc, cell }) {
             <div className="flex flex-row">
               <h6 style={{fontSize: 10, color: "#282c34"}}>  hire me </h6>
             </div>
-            {cell.value}
+            {typeof cell !== "object" ? cell : cell.value}
           </div>
         }
       </div>
@@ -55,6 +63,7 @@ export default Cubes;
 Cubes.propTypes = {
   spaceRight: PropTypes.bool.isRequired,
   possibleNums: PropTypes.array,
-  setBoardFunc: PropTypes.func.isRequired,
-  cell: PropTypes.object.isRequired
+  setBoardFunc: PropTypes.func,
+  cell: PropTypes.any.isRequired,
+  index: PropTypes.array,
 };

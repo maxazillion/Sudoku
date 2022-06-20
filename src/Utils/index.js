@@ -2,6 +2,20 @@ import _ from "lodash";
 
 const oneToNine = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+const BLANK = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
+
 function makeBoard(rawBoard){
   let board = [];
   let blockCounterOuter = 0;
@@ -26,6 +40,63 @@ function makeBoard(rawBoard){
 
   })
   return board;
+}
+
+function boardToRawBoard(board){
+  let retBoard = [];
+  board.forEach((cell, index)=>{
+    if(index % 9 === 0){
+      retBoard.push([])
+    }
+    retBoard[retBoard.length - 1].push(cell.value);
+  })
+  return retBoard;
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function solveHandler(boards, setBoard = null) {
+  setBoard(boards[0]);
+  while (boards.length > 0) {
+    let startBoard = fillWhatYouCan(boards[0]);
+    let status = checkComplete(startBoard);
+
+    if (status === 1) {
+      if(setBoard === null){
+
+      }
+      else {
+        setBoard(startBoard);
+      }
+      return 1;
+    }
+    if (status === -1) {
+      boards.shift();
+    }
+    if (status === 0) {
+      if (solveHandler(createNewBoards(startBoard), setBoard) === 1) return 1;
+      boards.shift();
+    }
+  }
+  return -1;
+}
+
+function makeSeedBoard(){
+  let seedBoard = _.cloneDeep(BLANK);
+  let nums = [...oneToNine];
+
+  seedBoard.forEach((row, index)=>{
+    row.forEach((cell, subIndex)=>{
+      if(getRandomInt(2) === 1 && nums.length >= 1){
+        seedBoard[index][subIndex] = nums[0]
+        nums.shift();
+      }
+    })
+  })
+
+  return seedBoard;
 }
 
 function fillMoves(board){
@@ -134,6 +205,7 @@ function adjustPossible(board){
   })
 
   board.forEach((cell)=>{
+    cell.poss = [...oneToNine]
     cell.poss = cell.poss.filter((num)=>{
       return (vertPoss[cell.col].includes(num) &&
         horizPoss[cell.row].includes(num) &&
@@ -144,4 +216,6 @@ function adjustPossible(board){
   return board;
 }
 
-export {fillMoves, adjustPossible, fillWhatYouCan, checkEasyMoves, checkComplete, createNewBoards, makeBoard};
+export {fillMoves, adjustPossible, fillWhatYouCan,
+  checkEasyMoves, checkComplete, createNewBoards, boardToRawBoard,
+  makeBoard, solveHandler,oneToNine, BLANK, getRandomInt, makeSeedBoard};
