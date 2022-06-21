@@ -3,9 +3,9 @@ import _ from "lodash";
 
 function Cubes({ spaceRight, possibleNums, setBoardFunc, cell, index }) {
 
-  function onClickHandler(){
-    setBoardFunc((prev)=>{
-      if(typeof cell === "object") {
+  function onClickHandler() {
+    setBoardFunc((prev) => {
+      if (typeof cell === "object") {
         let num = cell.value;
         num = num + 1;
         if (num + 1 === 10) {
@@ -13,20 +13,25 @@ function Cubes({ spaceRight, possibleNums, setBoardFunc, cell, index }) {
         }
         prev[cell.index].value = num;
         return [...prev];
+      } else {
+        let temp = _.cloneDeep(prev);
+        if (temp[index[0]][index[1]] === 9) {
+          temp[index[0]][index[1]] = 0;
+        } else {
+          temp[index[0]][index[1]] += 1;
+        }
+
+        return [...temp];
       }
-      else{
-        let temp = _.cloneDeep(prev)
-        temp[index[0]][index[1]] += 1;
-        return [...temp]
-      }
-    })
+    });
 
   }
+
   return (
     <div style={{
       marginRight: spaceRight ? "35px" : "15px",
       marginBottom: "5px",
-      marginLeft: cell.col === 0 ? "15px": "",
+      marginLeft: cell.col === 0 ? "15px" : "",
       width: "60px",
       height: "60px"
     }}
@@ -41,14 +46,14 @@ function Cubes({ spaceRight, possibleNums, setBoardFunc, cell, index }) {
         {possibleNums ?
           <div className="flex flex-col">
             <div className="flex flex-row">
-              <h6 style={{fontSize: 8}}>{possibleNums.join("").toString()}</h6>
+              <h6 style={{ fontSize: 8 }}>{possibleNums.join("").toString()}</h6>
             </div>
             {cell.value}
           </div>
-        :
+          :
           <div className="flex flex-col">
             <div className="flex flex-row">
-              <h6 style={{fontSize: 10, color: "#282c34"}}>  hire me </h6>
+              <h6 style={{ fontSize: 10, color: "#282c34" }}> hire me </h6>
             </div>
             {typeof cell !== "object" ? cell : cell.value}
           </div>
@@ -65,5 +70,5 @@ Cubes.propTypes = {
   possibleNums: PropTypes.array,
   setBoardFunc: PropTypes.func,
   cell: PropTypes.any.isRequired,
-  index: PropTypes.array,
+  index: PropTypes.array
 };

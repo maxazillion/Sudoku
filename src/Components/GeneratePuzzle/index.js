@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import Button from "../Button";
 import { useEffect, useState } from "react";
 import { adjustPossible, BLANK, getRandomInt, makeBoard, makeSeedBoard, oneToNine, solveHandler } from "../../Utils";
-import _ from "lodash";
 
 
 
@@ -13,16 +12,15 @@ function GeneratePuzzle({setPuzzle, setPage}) {
   function generateHandler(difficulty) {
     let retPuzzle = [[],[],[],[],[],[],[],[],[]];
 
-    let temp = seedBoard.map((cell)=>{
+    let temp = adjustPossible(seedBoard.map((cell)=>{
       let randInt = getRandomInt(difficulty)
       if(randInt > 15 || randInt < 3){
-        console.log("yes")
         cell.value = 0;
         cell.poss = [...oneToNine]
         return cell
       }
       return cell
-    })
+    }))
 
     temp.forEach((cell, index)=>{
       retPuzzle[index % 9].push(cell.value);

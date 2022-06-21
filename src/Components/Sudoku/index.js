@@ -33,7 +33,7 @@ const HARD2 = [
 
 
 function Sudoku({incomingBoard, setPage}) {
-  const [savedBoard, setSavedBoard] = useState(_.cloneDeep(adjustPossible(makeBoard(_.cloneDeep(incomingBoard)))));
+  const [savedBoard] = useState(_.cloneDeep(adjustPossible(makeBoard(_.cloneDeep(incomingBoard)))));
   const [board, setBoard] = useState(_.cloneDeep(adjustPossible(makeBoard(_.cloneDeep(incomingBoard)))));
 
   useEffect(() => {

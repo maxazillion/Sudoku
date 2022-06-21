@@ -76,7 +76,8 @@ function solveHandler(boards, setBoard = null) {
       boards.shift();
     }
     if (status === 0) {
-      if (solveHandler(createNewBoards(startBoard), setBoard) === 1) return 1;
+      if (solveHandler(createNewBoards(startBoard), setBoard) === 1){
+        return 1;}
       boards.shift();
     }
   }
@@ -86,12 +87,14 @@ function solveHandler(boards, setBoard = null) {
 function makeSeedBoard(){
   let seedBoard = _.cloneDeep(BLANK);
   let nums = [...oneToNine];
+  let change = false;
 
   seedBoard.forEach((row, index)=>{
     row.forEach((cell, subIndex)=>{
-      if(getRandomInt(2) === 1 && nums.length >= 1){
-        seedBoard[index][subIndex] = nums[0]
+      if(getRandomInt(2) === 1 && !change){
+        seedBoard[index][subIndex] = nums[getRandomInt(9)]
         nums.shift();
+        change = true;
       }
     })
   })
