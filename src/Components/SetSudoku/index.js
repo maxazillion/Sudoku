@@ -20,7 +20,7 @@ function SetSudoku({setPuzzle, setPage}) {
         cell={board[i][ii]}
         setBoardFunc={setBoard}
         index={[i, ii]}
-        key={ i + 1 * ii +  1}
+        key={( i + 1) * (ii +  1)}
       />);
     }
   }

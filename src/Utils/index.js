@@ -61,7 +61,7 @@ function solveHandler(boards, setBoard = null) {
   setBoard(boards[0]);
   while (boards.length > 0) {
     let startBoard = fillWhatYouCan(boards[0]);
-    let status = checkComplete(startBoard);
+    let status = checkComplete(startBoard)
 
     if (status === 1) {
       if(setBoard === null){
@@ -113,8 +113,41 @@ function fillMoves(board){
 
 function checkComplete(board){
   let ret = 1;
-  let canChange = true;
 
+  let vertPoss = [[], [], [],
+    [], [], [],
+    [], [], []];
+  let horizPoss = [[], [], [],
+    [], [], [],
+    [], [], []];
+  let blockPoss = [[], [], [],
+    [], [], [],
+    [], [], []];
+
+  board.forEach((cell, index)=>{
+    if(cell.index === undefined) cell.index = index;
+    if(cell.value !== 0){
+      if(vertPoss[cell.col].includes(cell.value)){
+        ret = -1;
+      }
+      if(horizPoss[cell.row].includes(cell.value)){
+        ret = -1;
+        return -1
+      }
+      if(blockPoss[cell.block].includes(cell.value)){
+        ret = -1;
+        return -1
+      }
+      vertPoss[cell.col].push(cell.value);
+      horizPoss[cell.row].push(cell.value);
+      blockPoss[cell.block].push(cell.value);
+    }
+  })
+
+  if(ret === -1) return ret;
+
+  let canChange = true;
+  board = adjustPossible(board);
   board.forEach((cell)=>{
     if(cell.value === 0 && canChange){
       ret = 0;
@@ -148,7 +181,7 @@ function fillWhatYouCan(board){
   board = fillMoves(board);
   board = adjustPossible(board)
   let fs = 0;
-  while(!checkEasyMoves(board) && fs < 10){
+  while(checkEasyMoves(board) === 0 && fs < 30){
     board = fillMoves(board);
     board = adjustPossible(board)
     fs++;
@@ -216,7 +249,7 @@ function adjustPossible(board){
 
     })
   })
-  return board;
+  return [...board];
 }
 
 export {fillMoves, adjustPossible, fillWhatYouCan,

@@ -11,7 +11,8 @@ function Board({numbers, setBoardFunc}){
       cell={cell}
       setBoardFunc={setBoardFunc}
       spaceRight={cell.col === 2 || cell.col === 5}
-      possibleNums={cell.value !== 0 ? null: cell.poss}/>)
+      possibleNums={cell.value !== 0 ? null: cell.poss}
+    />)
   })
 
 

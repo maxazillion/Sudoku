@@ -1,20 +1,22 @@
 import PropTypes from "prop-types";
 import _ from "lodash";
+import { adjustPossible } from "../../Utils";
 
 function Cubes({ spaceRight, possibleNums, setBoardFunc, cell, index }) {
 
   function onClickHandler() {
     setBoardFunc((prev) => {
+      let temp = _.cloneDeep(prev)
       if (typeof cell === "object") {
         let num = cell.value;
         num = num + 1;
         if (num + 1 === 10) {
           num = -1;
         }
-        prev[cell.index].value = num;
-        return [...prev];
+        temp[cell.index].value = num;
+
+        return adjustPossible([...temp]);
       } else {
-        let temp = _.cloneDeep(prev);
         if (temp[index[0]][index[1]] === 9) {
           temp[index[0]][index[1]] = 0;
         } else {
@@ -70,5 +72,5 @@ Cubes.propTypes = {
   possibleNums: PropTypes.array,
   setBoardFunc: PropTypes.func,
   cell: PropTypes.any.isRequired,
-  index: PropTypes.array
+  index: PropTypes.array,
 };

@@ -36,10 +36,6 @@ function Sudoku({incomingBoard, setPage}) {
   const [savedBoard] = useState(_.cloneDeep(adjustPossible(makeBoard(_.cloneDeep(incomingBoard)))));
   const [board, setBoard] = useState(_.cloneDeep(adjustPossible(makeBoard(_.cloneDeep(incomingBoard)))));
 
-  useEffect(() => {
-    setBoard(adjustPossible(board));
-  }, [board]);
-
 
 
   return (
